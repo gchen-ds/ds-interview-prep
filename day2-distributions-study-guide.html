@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 2 — Probability Distributions Mastery</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Source+Serif+4:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0c0f14;
+    --surface: #13171e;
+    --surface2: #1a1f2a;
+    --border: #2a3040;
+    --text: #e2e5eb;
+    --text-dim: #8892a4;
+    --accent: #5eead4;
+    --accent2: #a78bfa;
+    --accent3: #f97316;
+    --accent4: #f472b6;
+    --accent5: #60a5fa;
+    --red: #ef4444;
+    --green: #22c55e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* Hero */
+  .hero {
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(94,234,212,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-family: 'Source Serif 4', serif;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero-sub { color: var(--text-dim); font-size: 16px; max-width: 600px; }
+
+  /* Navigation Tabs */
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 24px 0 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .nav-tab {
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dim);
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* Sections */
+  .section { display: none; padding: 32px 0 60px; }
+  .section.active { display: block; }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s;
+  }
+  .card:hover { border-color: var(--accent); }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .card-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .card-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .card-subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* Distribution Blocks */
+  .dist-type {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .discrete { background: rgba(94,234,212,0.12); color: var(--accent); }
+  .continuous { background: rgba(167,139,250,0.12); color: var(--accent2); }
+
+  /* Formula Box */
+  .formula-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    line-height: 1.8;
+    overflow-x: auto;
+  }
+  .formula-box .label {
+    color: var(--text-dim);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .formula-box .val { color: var(--accent); }
+  .formula-box.alt { border-left-color: var(--accent2); }
+  .formula-box.alt .val { color: var(--accent2); }
+  .formula-box.warn { border-left-color: var(--accent3); }
+  .formula-box.warn .val { color: var(--accent3); }
+
+  /* Grid */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 768px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 3px 4px 3px 0;
+  }
+  .tag-google { background: rgba(96,165,250,0.12); color: var(--accent5); }
+  .tag-meta { background: rgba(167,139,250,0.12); color: var(--accent2); }
+  .tag-amazon { background: rgba(249,115,22,0.12); color: var(--accent3); }
+  .tag-netflix { background: rgba(244,114,182,0.12); color: var(--accent4); }
+  .tag-apple { background: rgba(94,234,212,0.12); color: var(--accent); }
+  .tag-airbnb { background: rgba(239,68,68,0.12); color: var(--red); }
+
+  /* Interview Q&A */
+  .qa-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .qa-question {
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .qa-question:hover { background: var(--surface2); }
+  .qa-arrow { transition: transform 0.3s; color: var(--accent); }
+  .qa-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s;
+    background: var(--surface2);
+    padding: 0 20px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+  .qa-item.open .qa-answer {
+    max-height: 800px;
+    padding: 16px 20px;
+  }
+  .qa-item.open .qa-arrow { transform: rotate(180deg); }
+
+  /* Chart containers */
+  .chart-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 20px 0;
+    position: relative;
+  }
+  .chart-container canvas { max-height: 320px; }
+  .chart-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  /* Comparison Table */
+  .comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 16px 0;
+  }
+  .comp-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--border);
+    background: var(--surface2);
+  }
+  .comp-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .comp-table tr:hover td { background: rgba(94,234,212,0.03); }
+  .comp-table .mono { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--accent); }
+
+  /* Key Insight */
+  .insight {
+    background: rgba(94,234,212,0.06);
+    border: 1px solid rgba(94,234,212,0.15);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .insight-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+
+  /* Cheat sheet */
+  .cheat-item {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .cheat-item:last-child { border-bottom: none; }
+  .cheat-name {
+    font-weight: 700;
+    min-width: 120px;
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+
+  /* FAANG example boxes */
+  .faang-example {
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 12px 0;
+  }
+  .faang-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+  .faang-desc { color: var(--text-dim); font-size: 14px; }
+
+  /* Slider controls */
+  .param-controls {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+  .param-group { flex: 1; min-width: 140px; }
+  .param-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .param-val { color: var(--accent); }
+  input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+
+  .section-header {
+    font-family: 'Source Serif 4', serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .section-desc {
+    color: var(--text-dim);
+    margin-bottom: 28px;
+    font-size: 15px;
+  }
+
+  h3 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 18px;
+    margin: 20px 0 10px;
+  }
+
+  ul { padding-left: 20px; }
+  li { margin-bottom: 6px; color: var(--text-dim); font-size: 14px; }
+  li strong { color: var(--text); }
+  p { margin-bottom: 12px; font-size: 15px; }
+
+  .difficulty {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+  }
+  .diff-easy { background: rgba(34,197,94,0.15); color: var(--green); }
+  .diff-med { background: rgba(249,115,22,0.15); color: var(--accent3); }
+  .diff-hard { background: rgba(239,68,68,0.15); color: var(--red); }
+
+  .flashcard-container { perspective: 1000px; margin: 12px 0; }
+  .flashcard {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    min-height: 100px;
+    cursor: pointer;
+    transition: transform 0.5s, border-color 0.3s;
+    transform-style: preserve-3d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .flashcard:hover { border-color: var(--accent2); }
+  .flashcard .front { font-weight: 700; font-size: 16px; }
+  .flashcard .back { display: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: var(--accent); }
+  .flashcard.flipped .front { display: none; }
+  .flashcard.flipped .back { display: block; }
+  .flip-hint { text-align: center; color: var(--text-dim); font-size: 12px; margin-top: 4px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="hero">
+    <div class="hero-label">30-Day Schedule</div>
+    <h1>Day 2: <span>Probability Distributions</span></h1>
+    <p class="hero-sub">Discrete & Continuous distributions — the building blocks of every data science interview at FAANG companies.</p>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('concepts')">Key Concepts</button>
+    <button class="nav-tab" onclick="showTab('visual')">Visualizations</button>
+    <button class="nav-tab" onclick="showTab('compare')">Compare & Contrast</button>
+    <button class="nav-tab" onclick="showTab('faang')">FAANG Examples</button>
+    <button class="nav-tab" onclick="showTab('interview')">Interview Questions</button>
+    <button class="nav-tab" onclick="showTab('flashcards')">Flashcards</button>
+  </div>
+
+  <!-- ============ TAB 1: KEY CONCEPTS ============ -->
+  <div id="concepts" class="section active">
+    <h2 class="section-header">Core Distributions</h2>
+    <p class="section-desc">Master the PMF/PDF, expected value, and variance for each. These formulas come up directly in interviews.</p>
+
+    <!-- BINOMIAL -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(94,234,212,0.12);">🎯</div>
+        <div>
+          <div class="card-title">Binomial Distribution</div>
+          <div class="card-subtitle">n independent trials, each with probability p of success</div>
+        </div>
+      </div>
+      <span class="dist-type discrete">DISCRETE</span>
+      <p>Models the <strong>number of successes</strong> in n independent Bernoulli trials. Think: "Out of n attempts, how many succeed?"</p>
+
+      <div class="formula-box">
+        <span class="label">PMF</span>
+        P(X = k) = <span class="val">C(n,k) · p<sup>k</sup> · (1−p)<sup>n−k</sup></span> &nbsp; for k = 0, 1, …, n
+      </div>
+      <div class="grid-2">
+        <div class="formula-box">
+          <span class="label">Expected Value</span>
+          E[X] = <span class="val">n · p</span>
+        </div>
+        <div class="formula-box">
+          <span class="label">Variance</span>
+          Var(X) = <span class="val">n · p · (1 − p)</span>
+        </div>
+      </div>
+
+      <div class="insight">
+        <span class="insight-icon">💡</span>
+        <div><strong>Key intuition:</strong> Variance is maximized when p = 0.5 (most uncertainty). As p → 0 or p → 1, variance shrinks because outcomes become predictable.</div>
+      </div>
+
+      <h3>When to use it</h3>
+      <ul>
+        <li><strong>Fixed number of trials</strong> (n is known)</li>
+        <li>Each trial is <strong>independent</strong> with same probability p</li>
+        <li>You care about the <strong>count of successes</strong></li>
+      </ul>
+    </div>
+
+    <!-- POISSON -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(167,139,250,0.12);">⚡</div>
+        <div>
+          <div class="card-title">Poisson Distribution</div>
+          <div class="card-subtitle">Count of events in a fixed interval, rate = λ</div>
+        </div>
+      </div>
+      <span class="dist-type discrete">DISCRETE</span>
+      <p>Models the <strong>number of events</strong> occurring in a fixed interval of time/space when events happen at a constant average rate λ and independently.</p>
+
+      <div class="formula-box alt">
+        <span class="label">PMF</span>
+        P(X = k) = <span class="val">e<sup>−λ</sup> · λ<sup>k</sup> / k!</span> &nbsp; for k = 0, 1, 2, …
+      </div>
+      <div class="grid-2">
+        <div class="formula-box alt">
+          <span class="label">Expected Value</span>
+          E[X] = <span class="val">λ</span>
+        </div>
+        <div class="formula-box alt">
+          <span class="label">Variance</span>
+          Var(X) = <span class="val">λ</span>
+        </div>
+      </div>
+
+      <div class="insight">
+        <span class="insight-icon">💡</span>
+        <div><strong>Key insight:</strong> E[X] = Var(X) = λ. This is the signature property of Poisson. If your data's mean ≈ variance, it's likely Poisson. If variance >> mean, consider Negative Binomial (overdispersion).</div>
+      </div>
+
+      <h3>When to use it</h3>
+      <ul>
+        <li>Events are <strong>rare relative to opportunities</strong></li>
+        <li>Events occur <strong>independently</strong> at a constant rate</li>
+        <li>You're counting events in a <strong>continuous interval</strong> (time, area, volume)</li>
+        <li>Approximation of Binomial when n is large and p is small (λ = np)</li>
+      </ul>
+    </div>
+
+    <!-- GEOMETRIC -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(249,115,22,0.12);">🔁</div>
+        <div>
+          <div class="card-title">Geometric Distribution</div>
+          <div class="card-subtitle">Number of trials until first success</div>
+        </div>
+      </div>
+      <span class="dist-type discrete">DISCRETE</span>
+      <p>Models <strong>how long you wait</strong> until the first success. The only discrete distribution with the <strong>memoryless property</strong>.</p>
+
+      <div class="formula-box warn">
+        <span class="label">PMF (trials until first success)</span>
+        P(X = k) = <span class="val">(1 − p)<sup>k−1</sup> · p</span> &nbsp; for k = 1, 2, 3, …
+      </div>
+      <div class="grid-2">
+        <div class="formula-box warn">
+          <span class="label">Expected Value</span>
+          E[X] = <span class="val">1 / p</span>
+        </div>
+        <div class="formula-box warn">
+          <span class="label">Variance</span>
+          Var(X) = <span class="val">(1 − p) / p²</span>
+        </div>
+      </div>
+
+      <div class="insight">
+        <span class="insight-icon">💡</span>
+        <div><strong>Memoryless property:</strong> P(X > s + t | X > s) = P(X > t). No matter how long you've been waiting, the expected remaining wait is the same. Interviewers <em>love</em> asking about this.</div>
+      </div>
+
+      <h3>⚠️ Convention warning</h3>
+      <p style="color:var(--text-dim);font-size:14px;">Some textbooks define X as the number of <em>failures</em> before the first success (starting at 0). Then E[X] = (1−p)/p. Always clarify which convention your interviewer uses.</p>
+    </div>
+
+    <!-- NORMAL -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(96,165,250,0.12);">📊</div>
+        <div>
+          <div class="card-title">Normal (Gaussian) Distribution</div>
+          <div class="card-subtitle">The bell curve — parameters μ, σ²</div>
+        </div>
+      </div>
+      <span class="dist-type continuous">CONTINUOUS</span>
+      <p>The most important distribution in statistics. Arises from the <strong>Central Limit Theorem</strong> — sums/averages of many independent random variables converge to Normal regardless of the original distribution.</p>
+
+      <div class="formula-box">
+        <span class="label">PDF</span>
+        f(x) = <span class="val">(1 / √(2πσ²)) · exp(−(x−μ)² / 2σ²)</span>
+      </div>
+      <div class="grid-2">
+        <div class="formula-box">
+          <span class="label">Expected Value</span>
+          E[X] = <span class="val">μ</span>
+        </div>
+        <div class="formula-box">
+          <span class="label">Variance</span>
+          Var(X) = <span class="val">σ²</span>
+        </div>
+      </div>
+
+      <div class="insight">
+        <span class="insight-icon">💡</span>
+        <div><strong>68-95-99.7 Rule:</strong> ~68% of data within ±1σ, ~95% within ±2σ, ~99.7% within ±3σ. This is by far the most-asked "quick recall" fact in interviews.</div>
+      </div>
+    </div>
+
+    <!-- EXPONENTIAL -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(244,114,182,0.12);">⏱️</div>
+        <div>
+          <div class="card-title">Exponential Distribution</div>
+          <div class="card-subtitle">Time between Poisson events — rate λ</div>
+        </div>
+      </div>
+      <span class="dist-type continuous">CONTINUOUS</span>
+      <p>Models the <strong>waiting time</strong> between consecutive events in a Poisson process. The continuous analog of the Geometric distribution.</p>
+
+      <div class="formula-box alt">
+        <span class="label">PDF</span>
+        f(x) = <span class="val">λ · e<sup>−λx</sup></span> &nbsp; for x ≥ 0
+      </div>
+      <div class="grid-2">
+        <div class="formula-box alt">
+          <span class="label">Expected Value</span>
+          E[X] = <span class="val">1 / λ</span>
+        </div>
+        <div class="formula-box alt">
+          <span class="label">Variance</span>
+          Var(X) = <span class="val">1 / λ²</span>
+        </div>
+      </div>
+
+      <div class="insight">
+        <span class="insight-icon">💡</span>
+        <div><strong>Memoryless (continuous):</strong> P(X > s+t | X > s) = P(X > t). The exponential is the <em>only</em> continuous memoryless distribution. Poisson counts events → Exponential measures time between them.</div>
+      </div>
+    </div>
+
+    <!-- LOG-NORMAL -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(34,197,94,0.12);">📈</div>
+        <div>
+          <div class="card-title">Log-Normal Distribution</div>
+          <div class="card-subtitle">If ln(X) ~ Normal, then X ~ Log-Normal</div>
+        </div>
+      </div>
+      <span class="dist-type continuous">CONTINUOUS</span>
+      <p>Arises when a variable is the <strong>product of many independent positive factors</strong> (vs. Normal which is the <em>sum</em>). Always positive, right-skewed.</p>
+
+      <div class="formula-box">
+        <span class="label">PDF</span>
+        f(x) = <span class="val">(1 / (x·σ·√(2π))) · exp(−(ln(x)−μ)² / 2σ²)</span> &nbsp; for x > 0
+      </div>
+      <div class="grid-2">
+        <div class="formula-box">
+          <span class="label">Expected Value</span>
+          E[X] = <span class="val">exp(μ + σ²/2)</span>
+        </div>
+        <div class="formula-box">
+          <span class="label">Variance</span>
+          Var(X) = <span class="val">(e<sup>σ²</sup> − 1) · e<sup>2μ+σ²</sup></span>
+        </div>
+      </div>
+
+      <div class="insight">
+        <span class="insight-icon">💡</span>
+        <div><strong>Why it matters in tech:</strong> Revenue per user, session durations, latency times, and stock prices all follow log-normal. When your data is positive-only and right-skewed, try logging it — if it becomes bell-shaped, it's log-normal.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 2: VISUALIZATIONS ============ -->
+  <div id="visual" class="section">
+    <h2 class="section-header">Interactive Visualizations</h2>
+    <p class="section-desc">Adjust parameters and see how each distribution changes shape. Build visual intuition for interviews.</p>
+
+    <!-- Binomial Chart -->
+    <div class="chart-container">
+      <div class="chart-title">Binomial Distribution — PMF</div>
+      <div class="param-controls">
+        <div class="param-group">
+          <div class="param-label">n (trials) <span class="param-val" id="binom-n-val">20</span></div>
+          <input type="range" id="binom-n" min="1" max="50" value="20" oninput="updateBinomial()">
+        </div>
+        <div class="param-group">
+          <div class="param-label">p (probability) <span class="param-val" id="binom-p-val">0.5</span></div>
+          <input type="range" id="binom-p" min="1" max="99" value="50" oninput="updateBinomial()">
+        </div>
+      </div>
+      <canvas id="binomialChart"></canvas>
+      <div id="binom-stats" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text-dim);margin-top:12px;"></div>
+    </div>
+
+    <!-- Poisson Chart -->
+    <div class="chart-container">
+      <div class="chart-title">Poisson Distribution — PMF</div>
+      <div class="param-controls">
+        <div class="param-group">
+          <div class="param-label">λ (rate) <span class="param-val" id="pois-l-val">5</span></div>
+          <input type="range" id="pois-l" min="1" max="30" value="5" oninput="updatePoisson()">
+        </div>
+      </div>
+      <canvas id="poissonChart"></canvas>
+      <div id="pois-stats" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text-dim);margin-top:12px;"></div>
+    </div>
+
+    <!-- Normal vs Log-Normal -->
+    <div class="chart-container">
+      <div class="chart-title">Normal vs Log-Normal — PDF comparison</div>
+      <div class="param-controls">
+        <div class="param-group">
+          <div class="param-label">μ <span class="param-val" id="norm-mu-val">0</span></div>
+          <input type="range" id="norm-mu" min="-3" max="3" value="0" step="0.5" oninput="updateNormalLogNormal()">
+        </div>
+        <div class="param-group">
+          <div class="param-label">σ <span class="param-val" id="norm-sig-val">1</span></div>
+          <input type="range" id="norm-sig" min="0.2" max="3" value="1" step="0.1" oninput="updateNormalLogNormal()">
+        </div>
+      </div>
+      <canvas id="normalChart"></canvas>
+    </div>
+
+    <!-- Exponential Chart -->
+    <div class="chart-container">
+      <div class="chart-title">Exponential Distribution — PDF</div>
+      <div class="param-controls">
+        <div class="param-group">
+          <div class="param-label">λ (rate) <span class="param-val" id="exp-l-val">1</span></div>
+          <input type="range" id="exp-l" min="0.2" max="5" value="1" step="0.1" oninput="updateExponential()">
+        </div>
+      </div>
+      <canvas id="expChart"></canvas>
+      <div id="exp-stats" style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text-dim);margin-top:12px;"></div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 3: COMPARE ============ -->
+  <div id="compare" class="section">
+    <h2 class="section-header">Compare & Contrast</h2>
+    <p class="section-desc">The relationships between distributions are a goldmine for interview questions.</p>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Master Comparison Table</h3>
+      <div style="overflow-x:auto;">
+        <table class="comp-table">
+          <thead>
+            <tr><th>Distribution</th><th>Type</th><th>E[X]</th><th>Var(X)</th><th>Support</th><th>Key Property</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Binomial</strong></td><td><span class="dist-type discrete" style="margin:0;">Disc.</span></td><td class="mono">np</td><td class="mono">np(1−p)</td><td>{0,1,…,n}</td><td>Fixed # trials</td></tr>
+            <tr><td><strong>Poisson</strong></td><td><span class="dist-type discrete" style="margin:0;">Disc.</span></td><td class="mono">λ</td><td class="mono">λ</td><td>{0,1,2,…}</td><td>Mean = Variance</td></tr>
+            <tr><td><strong>Geometric</strong></td><td><span class="dist-type discrete" style="margin:0;">Disc.</span></td><td class="mono">1/p</td><td class="mono">(1−p)/p²</td><td>{1,2,3,…}</td><td>Memoryless (discrete)</td></tr>
+            <tr><td><strong>Normal</strong></td><td><span class="dist-type continuous" style="margin:0;">Cont.</span></td><td class="mono">μ</td><td class="mono">σ²</td><td>(−∞, ∞)</td><td>CLT, symmetric</td></tr>
+            <tr><td><strong>Exponential</strong></td><td><span class="dist-type continuous" style="margin:0;">Cont.</span></td><td class="mono">1/λ</td><td class="mono">1/λ²</td><td>[0, ∞)</td><td>Memoryless (continuous)</td></tr>
+            <tr><td><strong>Log-Normal</strong></td><td><span class="dist-type continuous" style="margin:0;">Cont.</span></td><td class="mono">e<sup>μ+σ²/2</sup></td><td class="mono">(e<sup>σ²</sup>−1)e<sup>2μ+σ²</sup></td><td>(0, ∞)</td><td>log(X) ~ Normal</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">🔗 Critical Relationships</h3>
+      <p>Interviewers love testing whether you understand how distributions connect:</p>
+
+      <div class="formula-box">
+        <span class="label">Binomial → Poisson</span>
+        When n → ∞ and p → 0 with <span class="val">np = λ constant</span>, Bin(n,p) ≈ Poisson(λ)
+      </div>
+      <div class="formula-box alt">
+        <span class="label">Poisson ↔ Exponential</span>
+        If # events in time t ~ <span class="val">Poisson(λt)</span>, then time between events ~ <span class="val">Exp(λ)</span>
+      </div>
+      <div class="formula-box warn">
+        <span class="label">Geometric ↔ Exponential</span>
+        Geometric is the <span class="val">discrete analog</span> of Exponential. Both are memoryless.
+      </div>
+      <div class="formula-box">
+        <span class="label">Normal ↔ Log-Normal</span>
+        If X ~ N(μ,σ²), then <span class="val">e<sup>X</sup> ~ LogNormal(μ,σ²)</span>. Sums → Normal, Products → LogNormal.
+      </div>
+      <div class="formula-box alt">
+        <span class="label">Binomial → Normal</span>
+        When n is large, <span class="val">Bin(n,p) ≈ N(np, np(1−p))</span> — the CLT in action
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Discrete vs Continuous — When to Use Which?</h3>
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="faang-example">
+          <div class="faang-title" style="color:var(--accent);">Use Discrete When…</div>
+          <div class="faang-desc">
+            You're counting things: clicks, conversions, errors, users, arrivals, defects. The outcome is a whole number. Ask: "Can I count this on my fingers?"
+          </div>
+        </div>
+        <div class="faang-example">
+          <div class="faang-title" style="color:var(--accent2);">Use Continuous When…</div>
+          <div class="faang-desc">
+            You're measuring things: time, revenue, latency, weight, distance, temperature. The outcome can take any value in an interval. Ask: "Can this be 3.7?"
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 4: FAANG EXAMPLES ============ -->
+  <div id="faang" class="section">
+    <h2 class="section-header">Real-World FAANG Applications</h2>
+    <p class="section-desc">How these distributions are actually used at top tech companies.</p>
+
+    <!-- Binomial -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(94,234,212,0.12);">🎯</div>
+        <div><div class="card-title">Binomial in the Wild</div></div>
+      </div>
+
+      <div class="faang-example">
+        <div class="faang-title"><span class="tag tag-meta">Meta</span> A/B Testing</div>
+        <div class="faang-desc">"Out of 10,000 users shown the new News Feed design, how many will click on an ad?" Each user is a Bernoulli trial (click or not), and total clicks ~ Binomial(n=10000, p). This is the foundation of every A/B test significance calculation.</div>
+      </div>
+      <div class="faang-example">
+        <div class="faang-title"><span class="tag tag-google">Google</span> Quality Raters</div>
+        <div class="faang-desc">"Out of 100 search results reviewed by human raters, how many are rated 'relevant'?" Binomial models the quality score distribution used to evaluate search ranking algorithms.</div>
+      </div>
+      <div class="faang-example">
+        <div class="faang-title"><span class="tag tag-airbnb">Airbnb</span> Booking Conversion</div>
+        <div class="faang-desc">"Of 500 users who view a listing, how many will book?" Conversion funnel analysis uses binomial modeling to set expectations and detect anomalies.</div>
+      </div>
+    </div>
+
+    <!-- Poisson -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(167,139,250,0.12);">⚡</div>
+        <div><div class="card-title">Poisson in the Wild</div></div>
+      </div>
+
+      <div class="faang-example">
+        <div class="faang-title"><span class="tag tag-amazon">Amazon</span> Server Requests</div>
+        <div class="faang-desc">"How many requests will hit our servers per second during Prime Day?" Request counts per time interval follow Poisson — this drives auto-scaling infrastructure decisions.</div>
+      </div>
+      <div class="faang-example">
+        <div class="faang-title"><span class="tag tag-netflix">Netflix</span> Error Rate Monitoring</div>
+        <div class="faang-desc">"How many streaming errors occur per hour?" If suddenly errors spike above the Poisson-expected range, it triggers automated alerts. Anomaly detection at scale.</div>
+      </div>
+      <div class="faang-example">
+        <div class="faang-title"><span class="tag tag-apple">Apple</span> App Store Reviews</div>
+        <div class="faang-desc">"How many 1-star reviews does an app get per day?" Low-frequency event monitoring uses Poisson to separate normal fluctuation from real quality issues.</div>
+      </div>
+    </div>
+
+    <!-- Geometric -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(249,115,22,0.12);">🔁</div>
+        <div><div class="card-title">Geometric in the Wild</div></div>
+      </div>
+
+      <div class="faang-example">
+        <div class="faang-title"><span class="tag tag-google">Google</span> Ad Click-Through</div>
+        <div class="faang-desc">"How many search results does a user scroll through before clicking one?" The position of first click follows a Geometric distribution — informs ad placement and pricing strategy.</div>
+      </div>
+      <div class="faang-example">
+        <div class="faang-title"><span class="tag tag-airbnb">Airbnb</span> Search to Book</div>
+        <div class="faang-desc">"How many listings does a guest browse before making their first booking?" Geometric models the trial-until-success pattern in user search behavior.</div>
+      </div>
+    </div>
+
+    <!-- Normal -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(96,165,250,0.12);">📊</div>
+        <div><div class="card-title">Normal in the Wild</div></div>
+      </div>
+
+      <div class="faang-example">
+        <div class="faang-title"><span class="tag tag-meta">Meta</span> A/B Test Statistics</div>
+        <div class="faang-desc">By CLT, the average engagement metric across millions of users is approximately Normal. This justifies using z-tests and t-tests for experiment analysis — the backbone of Meta's experimentation platform.</div>
+      </div>
+      <div class="faang-example">
+        <div class="faang-title"><span class="tag tag-netflix">Netflix</span> Recommendation Scores</div>
+        <div class="faang-desc">Predicted rating scores for content tend toward Normal after aggregation. Outliers (very high scores) become recommendations. Understanding the distribution helps set thresholds.</div>
+      </div>
+    </div>
+
+    <!-- Exponential -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(244,114,182,0.12);">⏱️</div>
+        <div><div class="card-title">Exponential in the Wild</div></div>
+      </div>
+
+      <div class="faang-example">
+        <div class="faang-title"><span class="tag tag-amazon">Amazon</span> Time Between Purchases</div>
+        <div class="faang-desc">"How long until a customer's next purchase?" Exponential models inter-arrival times. Drives re-engagement email timing — if a user exceeds the expected wait time, they might be churning.</div>
+      </div>
+      <div class="faang-example">
+        <div class="faang-title"><span class="tag tag-google">Google</span> Server Failure Intervals</div>
+        <div class="faang-desc">Time between hardware failures in data centers follows Exponential. Drives capacity planning: how many spare servers do we need to maintain 99.99% uptime?</div>
+      </div>
+    </div>
+
+    <!-- Log-Normal -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(34,197,94,0.12);">📈</div>
+        <div><div class="card-title">Log-Normal in the Wild</div></div>
+      </div>
+
+      <div class="faang-example">
+        <div class="faang-title"><span class="tag tag-amazon">Amazon</span> Revenue Per Customer</div>
+        <div class="faang-desc">Customer spend is classic log-normal: most spend a little, a few whales spend a lot. Using mean revenue is misleading — median or geometric mean is more representative. Critical for LTV models.</div>
+      </div>
+      <div class="faang-example">
+        <div class="faang-title"><span class="tag tag-airbnb">Airbnb</span> Listing Prices & Session Duration</div>
+        <div class="faang-desc">Nightly prices and time-on-site both follow log-normal. Right-skewed, positive-only. Airbnb uses log transforms before modeling to normalize these distributions.</div>
+      </div>
+      <div class="faang-example">
+        <div class="faang-title"><span class="tag tag-netflix">Netflix</span> Content Watch Time</div>
+        <div class="faang-desc">Watch time per session: most sessions are short, some are binges. Log-normal captures this skew. Used for content recommendation and bandwidth planning.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 5: INTERVIEW QUESTIONS ============ -->
+  <div id="interview" class="section">
+    <h2 class="section-header">Interview Questions</h2>
+    <p class="section-desc">Click each question to reveal the answer. Ordered by difficulty.</p>
+
+    <h3>Conceptual Questions</h3>
+
+    <div class="qa-item" onclick="toggleQA(this)">
+      <div class="qa-question">
+        When would you use Poisson vs. Binomial? <span class="difficulty diff-easy">EASY</span>
+        <span class="qa-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        <strong>Binomial</strong> when you have a <em>fixed number of trials</em> n and want to count successes. <strong>Poisson</strong> when you're counting events in a <em>continuous interval</em> (time/space) with no fixed upper bound. Practically: if you can say "out of n, how many…" → Binomial. If you ask "how many per hour/day…" → Poisson. Also, Poisson approximates Binomial when n is large and p is small (rare events).<br><br>
+        <strong>Example:</strong> "Out of 1000 emails sent, how many bounced?" → Binomial.<br>
+        "How many support tickets come in per hour?" → Poisson.
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="toggleQA(this)">
+      <div class="qa-question">
+        What is the memoryless property? Which distributions have it? <span class="difficulty diff-easy">EASY</span>
+        <span class="qa-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        <strong>Memoryless:</strong> P(X > s+t | X > s) = P(X > t). The probability of having to wait t more units doesn't depend on how long you've already waited s. <br><br>
+        <strong>Two distributions have it:</strong> Geometric (discrete) and Exponential (continuous). They are the <em>only</em> distributions with this property in their respective domains.<br><br>
+        <strong>Example:</strong> If a server's time-to-failure is exponential with mean 100 hours, and it's been running for 80 hours, the expected remaining time is still 100 hours — not 20.
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="toggleQA(this)">
+      <div class="qa-question">
+        A metric at your company has mean 50 and variance 50. What distribution might this follow? <span class="difficulty diff-med">MEDIUM</span>
+        <span class="qa-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        <strong>Poisson with λ = 50.</strong> The defining property of Poisson is that E[X] = Var(X) = λ. When you observe mean ≈ variance for count data, Poisson is the first candidate.<br><br>
+        <strong>Follow-up trap:</strong> If the variance is much larger than the mean (overdispersion), the data may follow a <strong>Negative Binomial</strong> instead. This is extremely common in real-world count data (e.g., page views per user).
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="toggleQA(this)">
+      <div class="qa-question">
+        Why do we take log transforms of revenue data? What distribution does this suggest? <span class="difficulty diff-med">MEDIUM</span>
+        <span class="qa-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        Revenue data is typically <strong>right-skewed and positive-only</strong> → classic Log-Normal. If X ~ LogNormal, then log(X) ~ Normal. Log-transforming makes the data approximately Normal, which lets us:<br><br>
+        1. Use <strong>parametric tests</strong> (t-tests, ANOVA) that assume normality<br>
+        2. Get more <strong>stable means</strong> (less influenced by whales/outliers)<br>
+        3. Build better <strong>regression models</strong> (homoscedastic residuals)<br><br>
+        <strong>Important nuance:</strong> After log-transforming and computing the mean, exponentiating back gives the <em>geometric mean</em>, not the arithmetic mean. The geometric mean is more robust for skewed data.
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="toggleQA(this)">
+      <div class="qa-question">
+        Users arrive at a website at a rate of 3 per minute. What's the probability no one arrives in a 30-second window? <span class="difficulty diff-med">MEDIUM</span>
+        <span class="qa-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        Arrivals follow a <strong>Poisson process</strong> with rate λ = 3/min. For a 30-second window, λ<sub>30s</sub> = 3 × 0.5 = 1.5.<br><br>
+        P(X = 0) = e<sup>−1.5</sup> · 1.5<sup>0</sup> / 0! = <strong>e<sup>−1.5</sup> ≈ 0.223</strong><br><br>
+        About a 22.3% chance of no arrivals in 30 seconds.<br><br>
+        <strong>Equivalently (Exponential view):</strong> Time until first arrival ~ Exp(3/min). P(T > 0.5 min) = e<sup>−3(0.5)</sup> = e<sup>−1.5</sup> ≈ 0.223. Same answer — showing the Poisson-Exponential duality.
+      </div>
+    </div>
+
+    <h3 style="margin-top:32px;">Scenario-Based (FAANG-Style)</h3>
+
+    <div class="qa-item" onclick="toggleQA(this)">
+      <div class="qa-question">
+        You run an A/B test with 5000 users per group and 2% baseline conversion. How would you model the number of conversions? <span class="difficulty diff-med">MEDIUM</span>
+        <span class="qa-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        <strong>Exact:</strong> Conversions ~ Binomial(n=5000, p=0.02), so E[X] = 100, Var(X) = 98.<br><br>
+        <strong>Approximation 1 (Poisson):</strong> Since n is large and p is small, Poisson(λ=100) works well.<br><br>
+        <strong>Approximation 2 (Normal):</strong> Since np = 100 >> 10, the Normal approximation N(100, 98) is excellent. This is what we actually use in practice to compute z-scores and p-values.<br><br>
+        <strong>The full answer connects all three distributions</strong> — showing you understand when each approximation is valid is what sets apart a great answer.
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="toggleQA(this)">
+      <div class="qa-question">
+        Amazon notices that time between server failures follows an exponential distribution with λ = 0.1 failures/hour. What's the probability the server survives at least 24 hours? <span class="difficulty diff-hard">HARD</span>
+        <span class="qa-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        Time to failure T ~ Exp(λ = 0.1).<br><br>
+        P(T > 24) = e<sup>−0.1 × 24</sup> = e<sup>−2.4</sup> ≈ <strong>0.0907 ≈ 9.1%</strong><br><br>
+        Only about 9% chance the server survives a full day without failure.<br><br>
+        <strong>Follow-up:</strong> "If you have 10 independent servers, what's the probability at least one fails in 24 hours?"<br>
+        P(at least one fails) = 1 − P(all survive) = 1 − (0.0907)<sup>10</sup> ≈ 1 − essentially 0 ≈ <strong>~100%</strong>. Wait — actually P(all survive) = (0.0907)<sup>10</sup> is near zero, so P(at least one fails) ≈ 1. But that means P(each survives) = 0.0907, and for ALL to survive: (0.0907)<sup>10</sup> → almost certainly at least one will fail. This motivates redundancy!
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="toggleQA(this)">
+      <div class="qa-question">
+        An Airbnb DS notices that booking amounts have a mean of $200 but the median is $120. What distribution might this be? How would you analyze it? <span class="difficulty diff-hard">HARD</span>
+        <span class="qa-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        Mean >> Median is the hallmark of a <strong>right-skewed distribution</strong> → likely <strong>Log-Normal</strong>.<br><br>
+        <strong>Approach:</strong><br>
+        1. Plot histogram → confirm right skew<br>
+        2. Plot log(amount) histogram → should look Normal<br>
+        3. Use QQ plot of log(amount) against Normal quantiles<br>
+        4. Fit log-normal parameters: μ, σ from the logged data<br><br>
+        <strong>Practical implications:</strong><br>
+        • Report <em>median</em> ($120) not mean ($200) as the "typical" booking<br>
+        • Use geometric mean for aggregations<br>
+        • Log-transform before regression modeling<br>
+        • For A/B tests on revenue: consider testing log(revenue) or use non-parametric tests, since the raw distribution violates normality assumptions for small samples
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="toggleQA(this)">
+      <div class="qa-question">
+        You flip a biased coin (P(H) = 0.3) until you get heads. On average how many flips? If you've already flipped 5 tails, what's the expected number of remaining flips? <span class="difficulty diff-med">MEDIUM</span>
+        <span class="qa-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        Geometric with p = 0.3. <strong>E[X] = 1/p = 1/0.3 ≈ 3.33 flips.</strong><br><br>
+        After 5 tails? <strong>Still 3.33 flips expected remaining.</strong> This is the memoryless property! P(X > s+t | X > s) = P(X > t). The past failures don't matter.<br><br>
+        <strong>Why interviewers ask this:</strong> It tests whether you truly understand memorylessness vs. just memorizing the formula. Many candidates intuitively feel it should take fewer flips since "we're due for a heads" — that's the <strong>gambler's fallacy</strong>.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 6: FLASHCARDS ============ -->
+  <div id="flashcards" class="section">
+    <h2 class="section-header">Quick-Fire Flashcards</h2>
+    <p class="section-desc">Click to flip. Drill until you can answer without hesitating.</p>
+
+    <div class="grid-2">
+      <div>
+        <div class="flashcard-container">
+          <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="front">E[X] for Binomial(n, p)?</div>
+            <div class="back">np</div>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+        <div class="flashcard-container">
+          <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="front">Var(X) for Poisson(λ)?</div>
+            <div class="back">λ (same as mean!)</div>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+        <div class="flashcard-container">
+          <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="front">E[X] for Geometric(p)?</div>
+            <div class="back">1/p</div>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+        <div class="flashcard-container">
+          <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="front">What does the 68-95-99.7 rule say?</div>
+            <div class="back">68% within ±1σ<br>95% within ±2σ<br>99.7% within ±3σ</div>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+        <div class="flashcard-container">
+          <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="front">Which distributions are memoryless?</div>
+            <div class="back">Geometric (discrete)<br>Exponential (continuous)</div>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+        <div class="flashcard-container">
+          <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="front">If mean ≈ variance for count data, what distribution?</div>
+            <div class="back">Poisson(λ) where λ = mean = variance</div>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+      </div>
+      <div>
+        <div class="flashcard-container">
+          <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="front">E[X] for Exponential(λ)?</div>
+            <div class="back">1/λ</div>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+        <div class="flashcard-container">
+          <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="front">When does Binomial ≈ Poisson?</div>
+            <div class="back">n large, p small, λ = np</div>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+        <div class="flashcard-container">
+          <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="front">If X ~ LogNormal, what does log(X) follow?</div>
+            <div class="back">Normal(μ, σ²)</div>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+        <div class="flashcard-container">
+          <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="front">Poisson counts events. What measures time between them?</div>
+            <div class="back">Exponential</div>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+        <div class="flashcard-container">
+          <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="front">Mean >> Median for positive data. Which distribution?</div>
+            <div class="back">Log-Normal (right-skewed)</div>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+        <div class="flashcard-container">
+          <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="front">E[X] for Log-Normal(μ, σ²)?</div>
+            <div class="back">exp(μ + σ²/2)</div>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Tab switching
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  if (id === 'visual' && !chartsInitialized) initCharts();
+}
+
+// Q&A toggle
+function toggleQA(item) {
+  item.classList.toggle('open');
+}
+
+// Charts
+let chartsInitialized = false;
+let binomialChart, poissonChart, normalChart, expChart;
+
+const chartColors = {
+  teal: 'rgba(94,234,212,0.8)',
+  tealBg: 'rgba(94,234,212,0.15)',
+  purple: 'rgba(167,139,250,0.8)',
+  purpleBg: 'rgba(167,139,250,0.15)',
+  pink: 'rgba(244,114,182,0.8)',
+  pinkBg: 'rgba(244,114,182,0.15)',
+  blue: 'rgba(96,165,250,0.8)',
+  blueBg: 'rgba(96,165,250,0.15)',
+};
+
+const chartDefaults = {
+  responsive: true,
+  maintainAspectRatio: true,
+  plugins: {
+    legend: { display: false },
+  },
+  scales: {
+    x: { grid: { color: 'rgba(42,48,64,0.5)' }, ticks: { color: '#8892a4', font: { family: 'IBM Plex Mono', size: 11 } } },
+    y: { grid: { color: 'rgba(42,48,64,0.5)' }, ticks: { color: '#8892a4', font: { family: 'IBM Plex Mono', size: 11 } } },
+  }
+};
+
+function binomPMF(k, n, p) {
+  let coeff = 1;
+  for (let i = 0; i < k; i++) coeff = coeff * (n - i) / (i + 1);
+  return coeff * Math.pow(p, k) * Math.pow(1 - p, n - k);
+}
+
+function poissonPMF(k, lambda) {
+  let logP = -lambda + k * Math.log(lambda);
+  for (let i = 2; i <= k; i++) logP -= Math.log(i);
+  return Math.exp(logP);
+}
+
+function normalPDF(x, mu, sigma) {
+  return (1 / (sigma * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
+}
+
+function logNormalPDF(x, mu, sigma) {
+  if (x <= 0) return 0;
+  return (1 / (x * sigma * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((Math.log(x) - mu) / sigma, 2));
+}
+
+function initCharts() {
+  chartsInitialized = true;
+
+  // Binomial
+  const bCtx = document.getElementById('binomialChart').getContext('2d');
+  binomialChart = new Chart(bCtx, {
+    type: 'bar',
+    data: { labels: [], datasets: [{ data: [], backgroundColor: chartColors.tealBg, borderColor: chartColors.teal, borderWidth: 1.5 }] },
+    options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, tooltip: { callbacks: { label: ctx => `P(X=${ctx.label}) = ${ctx.parsed.y.toFixed(4)}` } } } }
+  });
+  updateBinomial();
+
+  // Poisson
+  const pCtx = document.getElementById('poissonChart').getContext('2d');
+  poissonChart = new Chart(pCtx, {
+    type: 'bar',
+    data: { labels: [], datasets: [{ data: [], backgroundColor: chartColors.purpleBg, borderColor: chartColors.purple, borderWidth: 1.5 }] },
+    options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, tooltip: { callbacks: { label: ctx => `P(X=${ctx.label}) = ${ctx.parsed.y.toFixed(4)}` } } } }
+  });
+  updatePoisson();
+
+  // Normal vs LogNormal
+  const nCtx = document.getElementById('normalChart').getContext('2d');
+  normalChart = new Chart(nCtx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        { label: 'Normal', data: [], borderColor: chartColors.blue, backgroundColor: chartColors.blueBg, fill: true, pointRadius: 0, tension: 0.4, borderWidth: 2 },
+        { label: 'Log-Normal', data: [], borderColor: chartColors.pink, backgroundColor: chartColors.pinkBg, fill: true, pointRadius: 0, tension: 0.4, borderWidth: 2 },
+      ]
+    },
+    options: { ...chartDefaults, plugins: { legend: { display: true, labels: { color: '#8892a4', font: { family: 'IBM Plex Mono', size: 12 } } } } }
+  });
+  updateNormalLogNormal();
+
+  // Exponential
+  const eCtx = document.getElementById('expChart').getContext('2d');
+  expChart = new Chart(eCtx, {
+    type: 'line',
+    data: { labels: [], datasets: [{ data: [], borderColor: chartColors.pink, backgroundColor: chartColors.pinkBg, fill: true, pointRadius: 0, tension: 0.4, borderWidth: 2 }] },
+    options: chartDefaults,
+  });
+  updateExponential();
+}
+
+function updateBinomial() {
+  const n = parseInt(document.getElementById('binom-n').value);
+  const p = parseInt(document.getElementById('binom-p').value) / 100;
+  document.getElementById('binom-n-val').textContent = n;
+  document.getElementById('binom-p-val').textContent = p.toFixed(2);
+
+  const labels = [], data = [];
+  for (let k = 0; k <= n; k++) {
+    labels.push(k);
+    data.push(binomPMF(k, n, p));
+  }
+  binomialChart.data.labels = labels;
+  binomialChart.data.datasets[0].data = data;
+  binomialChart.update();
+  document.getElementById('binom-stats').innerHTML = `E[X] = ${(n*p).toFixed(2)} &nbsp;|&nbsp; Var(X) = ${(n*p*(1-p)).toFixed(2)} &nbsp;|&nbsp; SD = ${Math.sqrt(n*p*(1-p)).toFixed(2)}`;
+}
+
+function updatePoisson() {
+  const lambda = parseInt(document.getElementById('pois-l').value);
+  document.getElementById('pois-l-val').textContent = lambda;
+
+  const maxK = Math.max(lambda * 3, 15);
+  const labels = [], data = [];
+  for (let k = 0; k <= maxK; k++) {
+    labels.push(k);
+    data.push(poissonPMF(k, lambda));
+  }
+  poissonChart.data.labels = labels;
+  poissonChart.data.datasets[0].data = data;
+  poissonChart.update();
+  document.getElementById('pois-stats').innerHTML = `E[X] = Var(X) = ${lambda}`;
+}
+
+function updateNormalLogNormal() {
+  const mu = parseFloat(document.getElementById('norm-mu').value);
+  const sigma = parseFloat(document.getElementById('norm-sig').value);
+  document.getElementById('norm-mu-val').textContent = mu;
+  document.getElementById('norm-sig-val').textContent = sigma.toFixed(1);
+
+  const labels = [], normData = [], lnData = [];
+  for (let x = -6; x <= 10; x += 0.1) {
+    labels.push(x.toFixed(1));
+    normData.push(normalPDF(x, mu, sigma));
+    lnData.push(x > 0 ? logNormalPDF(x, mu, sigma) : 0);
+  }
+  normalChart.data.labels = labels;
+  normalChart.data.datasets[0].data = normData;
+  normalChart.data.datasets[1].data = lnData;
+  normalChart.update();
+}
+
+function updateExponential() {
+  const lambda = parseFloat(document.getElementById('exp-l').value);
+  document.getElementById('exp-l-val').textContent = lambda.toFixed(1);
+
+  const labels = [], data = [];
+  const maxX = Math.max(5 / lambda, 3);
+  for (let x = 0; x <= maxX; x += maxX/100) {
+    labels.push(x.toFixed(2));
+    data.push(lambda * Math.exp(-lambda * x));
+  }
+  expChart.data.labels = labels;
+  expChart.data.datasets[0].data = data;
+  expChart.update();
+  document.getElementById('exp-stats').innerHTML = `E[X] = ${(1/lambda).toFixed(2)} &nbsp;|&nbsp; Var(X) = ${(1/(lambda*lambda)).toFixed(2)}`;
+}
+</script>
+
+</body>
+</html>
