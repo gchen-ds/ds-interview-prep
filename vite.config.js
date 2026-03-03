@@ -1,8 +1,7 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/react-swc'
 
 export default defineConfig({
   plugins: [react()],
-  server: { historyApiFallback: true },
-  base: './',
+  base: '/ds-interview-prep/', // This MUST match your GitHub repo name exactly
 })
