@@ -149,13 +149,26 @@ const weekReviews = [
           "Know SQL→Pandas translation: JOIN=merge(), WHERE=query() or boolean index, HAVING=groupby().filter()",
           "Can write platform adjustment function with a dict of multipliers"
         ]
+      },
+      {
+        "heading": "Python for Stats + ML",
+        "items": [
+          "Can write full Airbnb-style A/B analysis: merge visits+bookings, flag converted, call ttest_ind, print p-value",
+          "Know when to use mannwhitneyu vs ttest_ind (non-normal/skewed data → Mann-Whitney U)",
+          "Can write a bootstrap CI function: np.random.choice with replace=True, np.percentile for bounds",
+          "Can fit OLS in statsmodels: sm.add_constant + sm.OLS().fit() and interpret coef + R²",
+          "Can build sklearn logistic regression pipeline: train_test_split → fit → classification_report",
+          "Can write chi2_contingency test to check for randomization imbalance between groups"
+        ]
       }
     ],
     "derivationsToWrite": [
       "Write Meta video call % query: bidirectional JOIN + AVG(CASE WHEN) (from memory, cold)",
       "Write Spotify A/B SQL: join bucket + streams on user_id AND date>=first_exposed, compute avg per group",
       "Write pandas equivalent of: SELECT user_id, AVG(ms) FROM streams WHERE date>'2024-01' GROUP BY user_id HAVING AVG(ms)>1000",
-      "Write the Airbnb t-test pipeline: merge visitor+booking, compute converted flag, call ttest_ind"
+      "Write the Airbnb t-test pipeline: merge visitor+booking, compute converted flag, call ttest_ind",
+      "Write bootstrap_ci() from memory: np.random.choice → loop B=1000 → np.percentile([2.5, 97.5])",
+      "Write statsmodels OLS from memory: sm.add_constant(X) → sm.OLS(y, X).fit() → .summary()"
     ],
     "decayReminders": [
       {

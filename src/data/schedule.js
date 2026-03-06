@@ -613,54 +613,62 @@ const schedule = [
   {
     "day": 11,
     "week": 2,
-    "cat": "sql",
-    "title": "SQL Deep Practice — All Companies",
+    "cat": "python",
+    "title": "Python for Stats + ML: scipy, statsmodels, sklearn",
     "topics": [
-      "Friend request acceptance rate over time + unfriend handling",
-      "Marketplace: avg sessions/user, time spent distribution",
-      "Ads: best-performing ad (CTR vs volume — discuss first)",
-      "Airbnb booking+listing join: conversion by country, date"
+      "scipy.stats: ttest_ind, mannwhitneyu, chi2_contingency, proportions_ztest",
+      "Bootstrap CI: resample with replacement B=1000 times, compute statistic each time",
+      "statsmodels OLS: sm.OLS(y, sm.add_constant(X)).fit() — interpret coef, p-values, R²",
+      "sklearn pipeline: LogisticRegression, train_test_split, cross_val_score, classification_report",
+      "End-to-end A/B analysis in Python: merge → flag converted → ttest_ind → report p-value + effect size"
     ],
     "resources": [
-      "LeetCode SQL Hard: #185, #262 — leetcode.com/problemset/database",
-      "DataLemur SQL Questions — datalemur.com/questions",
-      "StrataScratch SQL Problems — stratascratch.com"
+      "scipy.stats docs — docs.scipy.org/doc/scipy/reference/stats.html",
+      "statsmodels: Getting Started — statsmodels.org/stable/gettingstarted.html",
+      "scikit-learn User Guide: supervised learning — scikit-learn.org/stable/supervised_learning.html",
+      "Real Python: Python Statistics Fundamentals — realpython.com/python-statistics"
     ],
-    "qKey": "sqlQ",
+    "qKey": "pythonQ",
     "qs": [
-      50,
-      75
+      4,
+      12
     ],
     "questions": [
       {
-        "q": "Reddit ad revenue distribution: given ad_revenue(transaction_date, ad_id, revenue) and active_ads(ad_id, advertiser_id), write a query showing distribution of number of ads per advertiser.",
-        "a": "SELECT ad_count, COUNT(*) as num_advertisers FROM (SELECT advertiser_id, COUNT(DISTINCT ad_id) as ad_count FROM active_ads GROUP BY advertiser_id) t GROUP BY ad_count ORDER BY ad_count;",
-        "co": "Reddit",
-        "freq": "High"
-      },
-      {
-        "q": "Meta spam detection: given user_actions(ds, user_id, post_id, action, extra), what % of viewed content was reported as spam yesterday?",
-        "a": "SELECT SUM(CASE WHEN action='report' AND extra='SPAM' THEN 1 ELSE 0 END) / SUM(CASE WHEN action='view' THEN 1.0 ELSE 0 END) AS spam_rate FROM user_actions WHERE ds = DATE_SUB(CURDATE(), INTERVAL 1 DAY);",
-        "co": "Meta",
-        "freq": "High"
-      },
-      {
-        "q": "Meta friend request acceptance rate over time, accounting for unfriend actions. Who has the most current friends?",
-        "a": "Net friends = (accepted requests as actor or target) - (unfriend actions as either party). Use UNION ALL to combine both sides, then SUM(+1 for accept, -1 for unfriend) per user, ORDER BY DESC LIMIT 1.",
-        "co": "Meta",
-        "freq": "High"
-      },
-      {
-        "q": "Airbnb: given a bookings table, find week-over-week change in first-time bookings per listing in the US.",
-        "a": "WITH first_books AS (SELECT listing_id, MIN(date) as first_date FROM bookings b JOIN listings l USING(listing_id) WHERE l.country='US' GROUP BY listing_id), weekly AS (SELECT DATE_TRUNC('week', first_date) as week, COUNT(*) as cnt FROM first_books GROUP BY 1) SELECT week, cnt, cnt - LAG(cnt,1) OVER (ORDER BY week) as wow_change FROM weekly;",
+        "q": "Given two DataFrames — visits(id_visitor, timestamp, country, assign) and bookings(id_visitor, id_booking, timestamp) — write a full A/B analysis in Python: compute conversion rate per group and test for statistical significance.",
+        "a": "merged = visits.merge(bookings[['id_visitor']], on='id_visitor', how='left'); merged['converted'] = merged['id_visitor'].isin(bookings['id_visitor']).astype(int); ctrl = merged[merged['assign']==0]['converted']; treat = merged[merged['assign']==1]['converted']; from scipy import stats; t, p = stats.ttest_ind(treat, ctrl); print(f'Control: {ctrl.mean():.3f}, Treatment: {treat.mean():.3f}, p={p:.4f}')",
         "co": "Airbnb",
         "freq": "High"
       },
       {
-        "q": "Spotify: given a streams table and ab_bucket table, what is the average stream time per user for control vs. variant? What if some users in the bucket table never streamed?",
-        "a": "SELECT bucket, AVG(COALESCE(ms_played, 0)) as avg_ms, COUNT(DISTINCT ab.user_id) as user_count FROM ab_bucket ab LEFT JOIN streams s ON ab.user_id = s.user_id AND s.date >= ab.first_exposed_date GROUP BY bucket;  — Use LEFT JOIN + COALESCE to include non-streamers as 0.",
-        "co": "Spotify",
+        "q": "When would you use scipy.stats.mannwhitneyu instead of ttest_ind? Write the call.",
+        "a": "Use Mann-Whitney U when: data is heavily non-normal (e.g., session duration, revenue — very right-skewed), small sample size, or metric is ordinal. Call: stats.mannwhitneyu(treat, ctrl, alternative='two-sided'). It tests whether one group's values tend to rank higher than the other's — does NOT assume normality.",
+        "co": "Meta/All",
         "freq": "High"
+      },
+      {
+        "q": "Write a bootstrap function to compute a 95% confidence interval for the median of a sample.",
+        "a": "import numpy as np\ndef bootstrap_ci(data, B=1000, ci=0.95):\n    stats_arr = [np.median(np.random.choice(data, size=len(data), replace=True)) for _ in range(B)]\n    lo = (1 - ci) / 2\n    return np.percentile(stats_arr, [lo*100, (1-lo)*100])\n# Usage: bootstrap_ci(df['revenue'].values)",
+        "co": "Meta/All",
+        "freq": "High"
+      },
+      {
+        "q": "Fit a statsmodels OLS regression predicting booking_rate from n_photos and avg_price. Interpret the output.",
+        "a": "import statsmodels.api as sm\nX = sm.add_constant(df[['n_photos','avg_price']])\nmodel = sm.OLS(df['booking_rate'], X).fit()\nprint(model.summary())\n# Interpret: coef on n_photos = expected change in booking_rate for 1 more photo, holding avg_price fixed. p<0.05 = statistically significant. R² = fraction of variance explained.",
+        "co": "Airbnb/All",
+        "freq": "High"
+      },
+      {
+        "q": "Build an end-to-end sklearn logistic regression pipeline to predict churn. Include train/test split, fit, and evaluation.",
+        "a": "from sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import classification_report\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\nmodel = LogisticRegression(class_weight='balanced', max_iter=500)\nmodel.fit(X_train, y_train)\nprint(classification_report(y_test, model.predict(X_test)))\n# class_weight='balanced' handles class imbalance automatically",
+        "co": "Netflix/All",
+        "freq": "High"
+      },
+      {
+        "q": "A product team asks: did our new feature change the distribution of user_type across groups? Write the chi-square test in Python.",
+        "a": "from scipy.stats import chi2_contingency\ncontingency = pd.crosstab(df['group'], df['user_type'])\nchi2, p, dof, expected = chi2_contingency(contingency)\nprint(f'chi2={chi2:.2f}, p={p:.4f}, dof={dof}')\n# If p < 0.05 → reject H0 that group assignment and user_type are independent → possible randomization imbalance.",
+        "co": "Meta/All",
+        "freq": "Medium"
       }
     ]
   },

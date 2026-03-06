@@ -3,14 +3,20 @@ import SchedulePage from "./pages/SchedulePage.jsx";
 import DayPage from "./pages/DayPage.jsx";
 
 // ── Add one import per day as you build them ──────────────────────────────────
+import day1Data from "./data/days/day1.js";
 import day2Data from "./data/days/day2.js";
 import day3Data from "./data/days/day3.js";
-// import day4Data from "./data/days/day4.js";  // uncomment when ready
+import day4Data from "./data/days/day4.js";
+import day5Data from "./data/days/day5.js";
+import day6Data from "./data/days/day6.js";
 
 const dayData = {
+  1: day1Data,
   2: day2Data,
   3: day3Data,
-  // 4: day4Data,
+  4: day4Data,
+  5: day5Data,
+  6: day6Data,
 };
 
 // ── Router ────────────────────────────────────────────────────────────────────
