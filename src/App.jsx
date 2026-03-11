@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import SchedulePage from "./pages/SchedulePage.jsx";
 import DayPage from "./pages/DayPage.jsx";
+import QuizPage from "./pages/QuizPage.jsx";
 
 // ── Add one import per day as you build them ──────────────────────────────────
 import day1Data from "./data/days/day1.js";
@@ -9,6 +10,7 @@ import day3Data from "./data/days/day3.js";
 import day4Data from "./data/days/day4.js";
 import day5Data from "./data/days/day5.js";
 import day6Data from "./data/days/day6.js";
+import day7Data from "./data/days/day7.js";
 
 const dayData = {
   1: day1Data,
@@ -17,6 +19,7 @@ const dayData = {
   4: day4Data,
   5: day5Data,
   6: day6Data,
+  7: day7Data,
 };
 
 // ── Router ────────────────────────────────────────────────────────────────────
@@ -51,6 +54,10 @@ export default function App() {
     return () => document.removeEventListener("click", onClick);
   }, []);
 
-  if (route.type === "day") return <DayPage data={dayData[route.day] || null} />;
+  if (route.type === "day") {
+    const d = dayData[route.day] || null;
+    if (d?.type === "quiz") return <QuizPage data={d} />;
+    return <DayPage data={d} />;
+  }
   return <SchedulePage />;
 }
