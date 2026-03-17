@@ -458,6 +458,55 @@ LEFT JOIN attendance_events a
   AND a.date = s.date_of_birth;</pre><p>Key insight: JOIN condition includes both <code>student_id</code> AND <code>date = date_of_birth</code> — the date goes in the JOIN, not WHERE, so students with no birthday attendance record are still included (as NULL → no attendance).</p>`
         }
       ]
+    },
+    {
+      title: "Extra — Book Coverage Extensions",
+      icon: "📖",
+      range: "Q51–Q56",
+      qs: [
+        {
+          id: "q51",
+          q: "What is the Law of Large Numbers? How is it different from the Central Limit Theorem?",
+          company: "Google/Meta",
+          freq: "Medium",
+          answer: `<p><strong>Law of Large Numbers (LLN):</strong> as n → ∞, the sample mean converges to the true population mean. It's about the <em>value</em> converging.</p><p><strong>Central Limit Theorem (CLT):</strong> as n grows, the <em>distribution</em> of the sample mean approaches normal, regardless of the underlying distribution. It's about the <em>shape</em>.</p><p>Key distinction: LLN says your estimate gets closer to the truth. CLT says the sampling distribution of that estimate becomes bell-shaped. Both are needed to justify A/B testing — LLN gives you confidence your sample mean is close to truth, CLT lets you compute p-values and CIs.</p>`
+        },
+        {
+          id: "q52",
+          q: "When would you use a Z-test vs a t-test? What changes between the two formulas?",
+          company: "Google/Meta",
+          freq: "High",
+          answer: `<p><strong>Z-test:</strong> use when population variance σ² is known, or sample size is large enough for CLT to apply (n > 30). Formula: Z = (X̄ − μ₀) / (σ / √n).</p><p><strong>t-test:</strong> use when population variance is unknown and sample size is small. Uses sample variance s² instead. Formula: t = (X̄ − μ₀) / (s / √n), with n−1 degrees of freedom.</p><p>The t-distribution has heavier tails than normal — it's more conservative when sample size is small. As n → ∞, t → Z. In practice for A/B testing at Meta/Google scale with millions of users, Z-test is standard because CLT applies.</p>`
+        },
+        {
+          id: "q53",
+          q: "What is the exponential distribution? What is its key property and when would you use it in a product context?",
+          company: "Google/Meta",
+          freq: "Medium",
+          answer: `<p><strong>Exponential distribution</strong> models the time between events in a Poisson process. PDF: f(x) = λe^(−λx), Mean = 1/λ, Var = 1/λ².</p><p><strong>Key property — memorylessness:</strong> P(X > s+t | X > s) = P(X > t). The probability of waiting another t units doesn't depend on how long you've already waited. This makes it the continuous analog of the geometric distribution.</p><p><strong>Product examples:</strong> time between a user's purchases, time to first click on an ad, time between payment failures, time between server errors. When you have a Poisson count process, the time between events is exponential with the same rate λ.</p>`
+        },
+        {
+          id: "q54",
+          q: "What is a Markov Chain? Give a product example and explain what a stationary distribution means.",
+          company: "Google/Meta",
+          freq: "Medium",
+          answer: `<p><strong>Markov Chain:</strong> a process where the probability of the next state depends only on the current state — not on history. This is called the Markov property.</p><p><strong>Product example:</strong> user engagement states — New, Active, Churned. A transition matrix defines P(next state | current state). E.g., P(Active → Churned) = 0.05 per week.</p><p><strong>Stationary distribution π</strong> satisfies π = πP — it's the long-run proportion of time spent in each state, regardless of where you started. If π(Churned) = 0.30, in the long run 30% of your users will be churned. Useful for predicting steady-state user base composition and lifetime value.</p>`
+        },
+        {
+          id: "q55",
+          q: "What is Maximum Likelihood Estimation (MLE)? Walk through deriving the MLE for a coin flip.",
+          company: "Google/Meta",
+          freq: "Medium",
+          answer: `<p><strong>MLE</strong> finds the parameters θ that maximize the probability of observing your data. Formally: θ_MLE = argmax L(θ) where L(θ) = P(data | θ).</p><p><strong>Derivation for Bernoulli (coin flip):</strong> suppose you flip n times and see k heads.</p><code>L(p) = p^k × (1−p)^(n−k)</code><p>Take log (log-likelihood): log L = k log p + (n−k) log(1−p)</p><p>Take derivative and set to 0: k/p − (n−k)/(1−p) = 0</p><p>Solve: <strong>p_MLE = k/n</strong> — the observed proportion of heads. Intuitive: the MLE is just the empirical frequency.</p><p>In ML, minimizing cross-entropy loss is equivalent to maximizing log-likelihood. MLE is the engine behind logistic regression, neural networks, and most parametric models.</p>`
+        },
+        {
+          id: "q56",
+          q: "Define covariance and correlation formulaically. What does each measure and what are their ranges?",
+          company: "Google/Meta",
+          freq: "High",
+          answer: `<p><strong>Covariance:</strong> Cov(X,Y) = E[(X − μX)(Y − μY)] = E[XY] − E[X]E[Y]</p><p>Measures the direction of the linear relationship between X and Y. Range: (−∞, +∞). Units are the product of the units of X and Y, so it's hard to interpret in absolute terms.</p><p><strong>Correlation:</strong> ρ(X,Y) = Cov(X,Y) / (σX × σY)</p><p>Normalized covariance. Range: [−1, +1], unitless. +1 = perfect positive linear relationship, −1 = perfect negative, 0 = no linear relationship.</p><p><strong>Key caveat:</strong> correlation = 0 does not mean independent — there could be a nonlinear relationship. Independence implies zero correlation, but not vice versa. Always plot the data before concluding there's no relationship.</p>`
+        }
+      ]
     }
   ]
 };

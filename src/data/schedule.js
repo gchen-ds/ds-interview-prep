@@ -1687,6 +1687,152 @@ const schedule = [
         "freq": "High"
       }
     ]
+  },
+  {
+    "day": 8,
+    "week": 2,
+    "cat": "sql",
+    "title": "SQL Window Functions",
+    "topics": [
+      "RANK vs DENSE_RANK vs ROW_NUMBER — differences with ties",
+      "LAG / LEAD — week-over-week, session gaps, first events per user",
+      "Aggregate windows — running totals, 7-day rolling averages",
+      "Top-N per group pattern — DENSE_RANK() OVER (PARTITION BY ... ORDER BY ...)"
+    ],
+    "resources": [
+      "🏷️ LeetCode #178 Rank Scores (Easy)",
+      "🏷️ LeetCode #184/#185 Dept Highest / Top 3 Salaries",
+      "🏷️ LeetCode #180 Consecutive Numbers (Medium)",
+      "Mode Analytics SQL Window Functions Tutorial"
+    ],
+    "qKey": "sqlWindowQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 9,
+    "week": 2,
+    "cat": "sql",
+    "title": "SQL Date Functions & Time Series",
+    "topics": [
+      "DATE_TRUNC, EXTRACT, DATEDIFF, INTERVAL arithmetic",
+      "Week-over-week change with LAG(cnt, 7)",
+      "% booked within 30 days — Airbnb pattern (LEFT JOIN + CASE WHEN)",
+      "Rolling 7-day window with ROWS BETWEEN 6 PRECEDING AND CURRENT ROW"
+    ],
+    "resources": [
+      "🏷️ LeetCode #197 Rising Temperature (Easy)",
+      "🏷️ LeetCode #262 Trips and Users (Hard)",
+      "Airbnb SQL interview: bookings + listings table patterns",
+      "Reddit CVR WoW pattern — LAG(cvr, 7)"
+    ],
+    "qKey": "sqlDateQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 10,
+    "week": 2,
+    "cat": "sql",
+    "title": "SQL Complex Patterns — Churn, Funnel, Self-Join",
+    "topics": [
+      "Churn detection — last_txn > 7 days ago (Reddit advertiser churn)",
+      "Funnel analysis — COUNT(DISTINCT CASE WHEN event='X' THEN user_id END)",
+      "Country penetration — US vs Not US based on % viewing time",
+      "Self-joins, EXISTS/NOT EXISTS, UNION ALL for bidirectional relationships"
+    ],
+    "resources": [
+      "🏷️ LeetCode #570 Managers with 5+ Direct Reports (Medium)",
+      "🏷️ LeetCode #602 Friend Requests II: Most Friends (Medium)",
+      "Reddit ad_revenue + active_ads SQL patterns",
+      "Airbnb first-booking and WoW patterns"
+    ],
+    "qKey": "sqlComplexQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 11,
+    "week": 2,
+    "cat": "python",
+    "title": "Python Pandas Fundamentals",
+    "topics": [
+      "DataFrame creation, inspection, filtering (boolean mask with & and |)",
+      "groupby().agg() with named aggregations — visitors, bookings, rate",
+      "pd.merge() — LEFT JOIN for A/B testing, how= options, suffix handling",
+      "DateTime operations, pivot_table, apply vs vectorized operations"
+    ],
+    "resources": [
+      "Airbnb join pattern: visit + booking → LEFT JOIN → fillna(0) → groupby",
+      "Pandas groupby docs — pandas.pydata.org",
+      "Reddit/Shopify: weighted random sampling with np.random.choice",
+      "Rolling windows: daily_df['col'].rolling(7).mean()"
+    ],
+    "qKey": "pyPandasQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 12,
+    "week": 2,
+    "cat": "python",
+    "title": "Python A/B Testing & Statistical Analysis",
+    "topics": [
+      "Two-proportion z-test — proportions_ztest(count=[k_c,k_t], nobs=[n_c,n_t])",
+      "95% CI on difference: (pt-pc) ± 1.96 * sqrt(pc*(1-pc)/nc + pt*(1-pt)/nt)",
+      "SRM check, power analysis, p-value interpretation pitfalls",
+      "Matplotlib bar chart with error bars — the Airbnb plot pattern"
+    ],
+    "resources": [
+      "Airbnb full A/B test pipeline: load → merge → agg → ztest → CI → plot",
+      "Netflix A/B test: 100k control vs treatment, 80.1% vs 80.2% retention",
+      "Reddit: dice P(A>B) with numpy broadcasting — A[:,None] > B[None,:]",
+      "scipy.stats proportions_ztest documentation"
+    ],
+    "qKey": "pyABtestQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 13,
+    "week": 2,
+    "cat": "python",
+    "title": "Python OOP & Interview Coding",
+    "topics": [
+      "OOP: class, __init__, instance methods, __repr__ — Shopify TDD pattern",
+      "ExperimentTracker class — CTR tracking with record(), ctr(), top_n()",
+      "🏷️ LeetCode #289 Game of Life — in-place with state encoding (2 and -1)",
+      "🏷️ LeetCode #380 RandomizedSet — O(1) insert/remove/getRandom via swap-and-pop"
+    ],
+    "resources": [
+      "Shopify pair programming: TDD, test-driven class implementation",
+      "🏷️ LeetCode #289 Game of Life (Medium)",
+      "🏷️ LeetCode #380 Insert Delete GetRandom O(1) (Medium)",
+      "Expedia: weighted random sampling, OOP data structures"
+    ],
+    "qKey": "pyOOPQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 14,
+    "week": 2,
+    "cat": "review",
+    "title": "Week 2 Review — SQL & Python Quiz (30 questions)",
+    "topics": [
+      "SQL sections: window functions, date patterns, churn/funnel/self-join",
+      "Python sections: pandas, A/B testing pipeline, OOP",
+      "Real company questions: Airbnb, Reddit, Shopify, Expedia, Netflix, LeetCode",
+      "Write from memory: WoW LAG, Airbnb pipeline, ExperimentTracker, RandomizedSet"
+    ],
+    "resources": [
+      "All Day 8–13 notes",
+      "🏷️ LeetCode SQL problems — practice any you haven't tried",
+      "DataLemur SQL Interview Questions"
+    ],
+    "qKey": "week2ReviewQ",
+    "qs": [],
+    "questions": []
   }
 ];
 export default schedule;
