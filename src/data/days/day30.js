@@ -1,5 +1,6 @@
 const day30Data = {
   day: 30,
+  prev_day: 29,
   week: 5,
   title: "BQ Stories, Case Study Framework & Final Expedia Prep",
   summary: "Your final prep day covers the 5 must-have behavioral stories in STAR format, a structured case study decision framework tailored to Expedia, deep-dive prep for your Double ML project, Expedia-specific domain knowledge, questions to ask, and a day-of interview checklist. You're ready to walk in with clarity on your unique angle (experimentation + causal ML at the ads analytics intersection).",

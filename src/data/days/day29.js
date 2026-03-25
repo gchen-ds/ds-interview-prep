@@ -1,5 +1,7 @@
 const day29Data = {
   day: 29,
+  prev_day: 28,
+  next_day: 30,
   week: 5,
   title: "Data Engineering, SQL at Scale & Pipeline Debugging",
   summary: "Master production-scale SQL patterns, Spark optimization, and real-world pipeline debugging. Learn how to handle data at scale with window functions, CTEs, shuffle-aware operations, and comprehensive data quality checks—all skills demanded in Data Engineering interviews at Expedia, Meta, and Airbnb.",
