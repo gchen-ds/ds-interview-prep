@@ -119,11 +119,9 @@ export default function DayCard({ day }) {
           )}
 
           {/* Link to daily study page */}
-          {day.day <= 3 && (
-            <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,.06)" }}>
-              <a href={`/day/${day.day}`} onClick={e => e.stopPropagation()} style={{ fontSize: 11, color: S.purple, textDecoration: "none" }}>📖 Open full study page →</a>
-            </div>
-          )}
+          <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,.06)" }}>
+            <a href={`/day/${day.day}`} onClick={e => e.stopPropagation()} style={{ fontSize: 11, color: S.purple, textDecoration: "none" }}>📖 Open full study page →</a>
+          </div>
         </div>
       )}
     </div>
