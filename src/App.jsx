@@ -18,6 +18,22 @@ import day11Data from "./data/days/day11.js";
 import day12Data from "./data/days/day12.js";
 import day13Data from "./data/days/day13.js";
 import day14Data from "./data/days/day14.js";
+import day15Data from "./data/days/day15.js";
+import day16Data from "./data/days/day16.js";
+import day17Data from "./data/days/day17.js";
+import day18Data from "./data/days/day18.js";
+import day19Data from "./data/days/day19.js";
+import day20Data from "./data/days/day20.js";
+import day21Data from "./data/days/day21.js";
+import day22Data from "./data/days/day22.js";
+import day23Data from "./data/days/day23.js";
+import day24Data from "./data/days/day24.js";
+import day25Data from "./data/days/day25.js";
+import day26Data from "./data/days/day26.js";
+import day27Data from "./data/days/day27.js";
+import day28Data from "./data/days/day28.js";
+import day29Data from "./data/days/day29.js";
+import day30Data from "./data/days/day30.js";
 
 const dayData = {
   1: day1Data,
@@ -34,6 +50,22 @@ const dayData = {
   12: day12Data,
   13: day13Data,
   14: day14Data,
+  15: day15Data,
+  16: day16Data,
+  17: day17Data,
+  18: day18Data,
+  19: day19Data,
+  20: day20Data,
+  21: day21Data,
+  22: day22Data,
+  23: day23Data,
+  24: day24Data,
+  25: day25Data,
+  26: day26Data,
+  27: day27Data,
+  28: day28Data,
+  29: day29Data,
+  30: day30Data,
 };
 
 // ── Router ────────────────────────────────────────────────────────────────────

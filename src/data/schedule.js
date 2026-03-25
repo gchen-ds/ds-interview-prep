@@ -1833,6 +1833,321 @@ const schedule = [
     "qKey": "week2ReviewQ",
     "qs": [],
     "questions": []
+  },
+  {
+    "day": 15,
+    "week": 3,
+    "cat": "stats",
+    "title": "A/B Testing Foundations",
+    "topics": [
+      "Type I / Type II errors: α, β, power = 1-β. Business interpretation.",
+      "Two-proportion z-test: proportions_ztest(count=[k_c,k_t], nobs=[n_c,n_t])",
+      "p-value interpretation: what it IS and what it is NOT",
+      "One-sided vs two-sided tests: when each is valid"
+    ],
+    "resources": [
+      "Evan Miller: How Not To Run an A/B Test (peeking)",
+      "Ronny Kohavi: Trustworthy Online Controlled Experiments",
+      "scipy proportions_ztest documentation"
+    ],
+    "qKey": "abFoundationsQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 16,
+    "week": 3,
+    "cat": "stats",
+    "title": "Experiment Design & Sample Size",
+    "topics": [
+      "Randomization unit: user vs session vs geo — and why it matters",
+      "MDE: minimum detectable effect — set by business, not statistics",
+      "Sample size formula: n = 2(z_α/2 + z_β)² × p(1-p) / MDE²",
+      "Duration: minimum 2 weeks for seasonality; novelty vs primacy effects",
+      "AA test, SRM check, CUPED variance reduction"
+    ],
+    "resources": [
+      "Optimizely Sample Size Calculator",
+      "Microsoft CUPED paper",
+      "SRM Checker tool"
+    ],
+    "qKey": "expDesignQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 17,
+    "week": 3,
+    "cat": "stats",
+    "title": "Statistical Pitfalls & Multiple Testing",
+    "topics": [
+      "Multiple testing: Bonferroni vs FDR (Benjamini-Hochberg)",
+      "Novelty and primacy effects — detection with daily effect plot",
+      "Simpson's Paradox — aggregate vs segment disagreement",
+      "SUTVA violations and network effects — when user-level A/B fails"
+    ],
+    "resources": [
+      "statsmodels multipletests documentation",
+      "Airbnb: Interference in Experimentation blog post"
+    ],
+    "qKey": "pitfallsQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 18,
+    "week": 3,
+    "cat": "stats",
+    "title": "Causal Inference — DiD & Pre-Post",
+    "topics": [
+      "DiD: formula, regression form, parallel trends assumption",
+      "Placebo test: run DiD on pre-period to validate parallel trends",
+      "Pre-post analysis: when it works and when it fails",
+      "Regression Discontinuity Design (RDD): threshold-based causal inference",
+      "Double ML bridge: how it connects to your Amazon experience"
+    ],
+    "resources": [
+      "Scott Cunningham: Causal Inference — The Mixtape (free)",
+      "Nick Huntington-Klein: The Effect (DiD chapter, free)"
+    ],
+    "qKey": "causalInfQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 19,
+    "week": 3,
+    "cat": "stats",
+    "title": "Incrementality & Attribution — Expedia Ads",
+    "topics": [
+      "Attribution vs incrementality: the umbrella story",
+      "iROAS = incremental revenue / ad spend. Break-even = 1 / commission_rate.",
+      "Ghost ad holdout: empty slot to 10% of eligible users → true incremental lift",
+      "Attribution models: last-touch, linear, time-decay, Shapley values",
+      "Double ML for incrementality without randomization"
+    ],
+    "resources": [
+      "Meta: Ghost Ad Methodology",
+      "DoubleML Python package documentation",
+      "Spotify: Incrementality testing blog post"
+    ],
+    "qKey": "incrementalityQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 20,
+    "week": 3,
+    "cat": "stats",
+    "title": "Metric Design & Advanced Topics",
+    "topics": [
+      "Metric hierarchy: primary, secondary, guardrail, exploratory",
+      "Guardrail metrics: page load, organic booking rate, bounce rate",
+      "Segmentation analysis: heterogeneous treatment effects + HTE regression",
+      "Multi-armed bandits: epsilon-greedy vs Thompson Sampling vs A/B",
+      "Communicating results: 3-sentence format + business impact calculation"
+    ],
+    "resources": [
+      "Netflix: Metrics that matter",
+      "Microsoft: Surrogate metric paper"
+    ],
+    "qKey": "metricDesignQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 21,
+    "week": 3,
+    "cat": "review",
+    "title": "Week 3 Review — A/B Testing & Causal Inference Quiz (24 questions)",
+    "topics": [
+      "Section 1: Foundations — Hypothesis Testing & z-Test (Q1–Q7)",
+      "Section 2: Experiment Design & Pitfalls (Q8–Q15)",
+      "Section 3: Causal Inference — DiD, Pre-Post & Incrementality (Q16–Q24)"
+    ],
+    "resources": [
+      "All Day 15-20 notes",
+      "Evan Miller: How Not To Run an A/B Test",
+      "Causal Inference: The Mixtape (DiD chapter)"
+    ],
+    "qKey": "week3ReviewQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 22,
+    "week": 4,
+    "cat": "ml",
+    "title": "ML Foundations I — Regression, Classification & Evaluation",
+    "topics": [
+      "Logistic regression: sigmoid, log-loss, gradient descent",
+      "Bias-variance decomposition: sources of each and how to fix",
+      "AUC-ROC vs log-loss for CTR prediction — which metric to optimize",
+      "Feature engineering and target leakage detection"
+    ],
+    "resources": [
+      "Hands-On Machine Learning with Scikit-Learn (Ch. 4-5)",
+      "StatQuest: Logistic Regression — youtube.com/c/joshstarmer"
+    ],
+    "qKey": "mlFoundQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 23,
+    "week": 4,
+    "cat": "ml",
+    "title": "ML Foundations II — Trees, Boosting & Calibration",
+    "topics": [
+      "Decision trees: Gini impurity, information gain, pruning",
+      "Random forests (bagging) vs gradient boosting (pseudo-residuals)",
+      "LightGBM and XGBoost: leaf-wise growth, histogram binning",
+      "Calibration: Platt scaling, ECE metric, calibration drift monitoring"
+    ],
+    "resources": [
+      "StatQuest: Gradient Boosting — youtube.com/c/joshstarmer",
+      "LightGBM documentation — lightgbm.readthedocs.io"
+    ],
+    "qKey": "treesBoostQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 24,
+    "week": 4,
+    "cat": "ml",
+    "title": "Ranking & Personalization",
+    "topics": [
+      "Learning to Rank: pointwise vs pairwise vs listwise (LambdaMART)",
+      "NDCG@k formula: normalized discounted cumulative gain",
+      "Two-tower models for retrieval + ranking pipeline",
+      "Position bias and IPS debiasing"
+    ],
+    "resources": [
+      "LightGBM LambdaRank objective documentation",
+      "Google: Two-Tower Model for Recommendations (paper)"
+    ],
+    "qKey": "rankingQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 25,
+    "week": 4,
+    "cat": "ml",
+    "title": "Ads Marketplace & Auction Theory",
+    "topics": [
+      "GSP auction: rank = bid × quality score, CPC = next_rank / own_quality",
+      "VCG auction: truthful bidding, social welfare maximization",
+      "pCTR calibration: calibration ratio = mean(predicted) / mean(actual)",
+      "Thompson Sampling for ads: Beta-Binomial explore-exploit",
+      "Revenue vs UX tradeoff: constrained optimization framework"
+    ],
+    "resources": [
+      "Hal Varian: Position Auctions paper (2007)",
+      "Google Ads: Auction Overview documentation"
+    ],
+    "qKey": "adsAuctionQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 26,
+    "week": 4,
+    "cat": "ml",
+    "title": "NLP & Modern LLMs",
+    "topics": [
+      "TF-IDF, Word2Vec, sentence embeddings — when to use each",
+      "Attention mechanism: Attention(Q,K,V) = softmax(QKᵀ/√d)V",
+      "BERT (bidirectional MLM) vs GPT (autoregressive CLM) pre-training",
+      "RAG architecture: when retrieval beats fine-tuning",
+      "LLM production constraints: latency, cost, hallucination, evaluation"
+    ],
+    "resources": [
+      "Andrej Karpathy: makemore / nanoGPT YouTube series",
+      "Hugging Face: NLP with Transformers (free)"
+    ],
+    "qKey": "nlpLLMQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 27,
+    "week": 4,
+    "cat": "ml",
+    "title": "Production ML Systems",
+    "topics": [
+      "Feature stores: offline vs online, point-in-time correctness (PIT)",
+      "Online vs batch serving: FastAPI + LGBM real-time scoring",
+      "Model monitoring: PSI (Population Stability Index), drift detection",
+      "Shadow mode vs canary deployment for ranking model rollout",
+      "Spark: DataFrame API, window functions, partitioned writes"
+    ],
+    "resources": [
+      "Chip Huyen: Designing ML Systems (free chapter)",
+      "Feast feature store documentation — feast.dev"
+    ],
+    "qKey": "prodMLQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 28,
+    "week": 4,
+    "cat": "review",
+    "title": "Week 4 Review — ML, Ranking, Ads & Production Quiz (24 questions)",
+    "topics": [
+      "Section 1: ML Foundations & Tree Models (Q1–Q8)",
+      "Section 2: Ranking, Ads & Auction Theory (Q9–Q16)",
+      "Section 3: NLP, LLMs & Production ML (Q17–Q24)"
+    ],
+    "resources": [
+      "All Day 22-27 notes",
+      "Expedia Group Tech Blog — expediagroup.com/tech"
+    ],
+    "qKey": "week4ReviewQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 29,
+    "week": 5,
+    "cat": "sql",
+    "title": "Data Engineering, SQL at Scale & Pipeline Debugging",
+    "topics": [
+      "Advanced SQL: window functions (ROW_NUMBER, LEAD/LAG), CTEs, anti-joins",
+      "Spark at Scale: DAG, shuffles, broadcast joins, Window API",
+      "Pipeline debugging: schema drift, late data, null explosions, fan-out joins",
+      "Expedia SQL patterns: hotel funnel, cohort analysis, session reconstruction",
+      "Python at scale: chunked processing, vectorization, generators, profiling"
+    ],
+    "resources": [
+      "Mode Analytics SQL Tutorial",
+      "Spark: The Definitive Guide (free chapters)"
+    ],
+    "qKey": "dataEngQ",
+    "qs": [],
+    "questions": []
+  },
+  {
+    "day": 30,
+    "week": 5,
+    "cat": "interview",
+    "title": "BQ Stories, Case Study Framework & Final Expedia Prep",
+    "topics": [
+      "5 core BQ stories in STAR format (influence, wrong decision, ambiguity, pushback, Double ML)",
+      "Case study framework: clarify → guardrails → A/B feasibility → sample size → decision",
+      "Double ML project deep dive: technical depth + business impact + Expedia bridge",
+      "Expedia domain knowledge: funnel metrics, ranking signals, commission structure",
+      "Questions to ask + day-of checklist + interview strategy"
+    ],
+    "resources": [
+      "Expedia Group Tech Blog — expediagroup.com/tech",
+      "Causal Inference: The Mixtape (free) — mixtape.scunning.com"
+    ],
+    "qKey": "finalPrepQ",
+    "qs": [],
+    "questions": []
   }
 ];
 export default schedule;
